@@ -15,3 +15,36 @@ class ModelTests(TestCase):
 
         self.assertEqual(user.email, email)
         self.assertTrue(user.check_password(password))
+
+    def test_new_user_email_normalized(self):
+        """Test the email for a new user is normalized."""
+        emails = [
+            ['test@TEST.com', 'test@test.com'],
+            ['Test2@Test.com', 'Test2@test.com'],
+            ['TEST3@TEST.COM', 'TEST3@test.com'],
+            ['test4@test.COM', 'test4@test.com'],
+        ]
+
+        for email, expected in emails:
+            user = get_user_model().objects.create_user(
+                email=email,
+                password='Testpass123',
+            )
+            self.assertEqual(user.email, expected)
+
+    def test_new_user_invalid_email(self):
+        """Test creating user with no email raises error."""
+        with self.assertRaises(ValueError):
+            get_user_model().objects.create_user(None, 'Testpass123')
+
+    def test_create_super_user_succssful(self):
+        """Test creating a new superuser."""
+        email = 'test@test.com'
+        password = 'testPass89'
+        user = get_user_model().objects.create_superuser(
+            email=email,
+            password=password,
+        )
+
+        self.assertTrue(user.is_superuser)
+        self.assertTrue(user.is_staff)
