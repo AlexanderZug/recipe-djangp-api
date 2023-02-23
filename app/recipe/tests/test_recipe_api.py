@@ -378,6 +378,48 @@ class PrivateRecipeApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(recipe.ingredients.count(), 0)
 
+    def test_filter_by_tags(self):
+        """Test filtering recipes by tags."""
+        r1 = sample_recipe(user=self.user, title='Thai vegetable curry')
+        r2 = sample_recipe(user=self.user, title='Aubergine with tahini')
+        tag1 = Tag.objects.create(user=self.user, name='Vegan')
+        tag2 = Tag.objects.create(user=self.user, name='Vegetarian')
+        r1.tags.add(tag1)
+        r2.tags.add(tag2)
+        r3 = sample_recipe(user=self.user, title='Fish and chips')
+
+        params = {'tags': f'{tag1.id},{tag2.id}'}
+        res = self.client.get(RECIPES_URL, params)
+
+        serializer1 = RecipeSerializer(r1)
+        serializer2 = RecipeSerializer(r2)
+        serializer3 = RecipeSerializer(r3)
+
+        self.assertIn(serializer1.data, res.data)
+        self.assertIn(serializer2.data, res.data)
+        self.assertNotIn(serializer3.data, res.data)
+
+    def test_filter_by_ingredients(self):
+        """Test filtering recipes by ingredients."""
+        r1 = sample_recipe(user=self.user, title='Posh beans on toast')
+        r2 = sample_recipe(user=self.user, title='Chicken cacciatore')
+        ingredient1 = Ingredient.objects.create(user=self.user, name='Feta cheese')
+        ingredient2 = Ingredient.objects.create(user=self.user, name='Chicken')
+        r1.ingredients.add(ingredient1)
+        r2.ingredients.add(ingredient2)
+        r3 = sample_recipe(user=self.user, title='Steak and mushrooms')
+
+        params = {'ingredients': f'{ingredient1.id},{ingredient2.id}'}
+        res = self.client.get(RECIPES_URL, params)
+
+        serializer1 = RecipeSerializer(r1)
+        serializer2 = RecipeSerializer(r2)
+        serializer3 = RecipeSerializer(r3)
+
+        self.assertIn(serializer1.data, res.data)
+        self.assertIn(serializer2.data, res.data)
+        self.assertNotIn(serializer3.data, res.data)
+
 
 class RecipeImageUploadTests(TestCase):
 
