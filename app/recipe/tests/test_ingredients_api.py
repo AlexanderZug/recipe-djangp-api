@@ -10,7 +10,6 @@ from rest_framework.test import APIClient
 from core.models import (
     Ingredient,
     Recipe,
-    Tag,
 )
 
 from recipe.serializers import IngredientSerializer

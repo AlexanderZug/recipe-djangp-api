@@ -1,7 +1,7 @@
-import tempfile
-import os
-
-from PIL import Image
+# import tempfile
+# import os
+#
+# from PIL import Image
 
 from decimal import Decimal
 
@@ -403,7 +403,10 @@ class PrivateRecipeApiTests(TestCase):
         """Test filtering recipes by ingredients."""
         r1 = sample_recipe(user=self.user, title='Posh beans on toast')
         r2 = sample_recipe(user=self.user, title='Chicken cacciatore')
-        ingredient1 = Ingredient.objects.create(user=self.user, name='Feta cheese')
+        ingredient1 = Ingredient.objects.create(
+            user=self.user,
+            name='Feta cheese'
+        )
         ingredient2 = Ingredient.objects.create(user=self.user, name='Chicken')
         r1.ingredients.add(ingredient1)
         r2.ingredients.add(ingredient2)
@@ -442,7 +445,8 @@ class PrivateRecipeApiTests(TestCase):
 #             img = Image.new('RGB', (10, 10))
 #             img.save(ntf, format='JPEG')
 #             ntf.seek(0)
-#             res = self.client.post(url, {'image': ntf}, format='multipart')
+#             res = self.client.post(url, {'image': ntf},
+#             format='multipart')
 #
 #         self.recipe.refresh_from_db()
 #         self.assertEqual(res.status_code, status.HTTP_200_OK)
@@ -452,6 +456,7 @@ class PrivateRecipeApiTests(TestCase):
 #     def test_upload_image_bad_request(self):
 #         """Test uploading an invalid image."""
 #         url = image_upload_url(self.recipe.id)
-#         res = self.client.post(url, {'image': 'notimage'}, format='multipart')
+#         res = self.client.post(url, {'image': 'notimage'},
+#         format='multipart')
 #
 #         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
